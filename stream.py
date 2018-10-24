@@ -25,14 +25,6 @@ def index():
 #         i+=1
 
 def get_frame():
-
-    camera_port=-1
-
-    ramp_frames=100
-
-    camera=cv2.VideoCapture(camera_port) #this makes a web cam object
-
-    
     i=1
     while True:
         stringData = cam_q.get()
@@ -41,18 +33,24 @@ def get_frame():
         i+=1
         sleep(0.25)
 
-    del(camera)
-
 @app.route('/calc')
 def calc():
      return Response(get_frame(),mimetype='multipart/x-mixed-replace; boundary=frame')
 
 
 def image_thread():
-    retval, im = camera.read()
-    imgencode=cv2.imencode('.jpg',im)[1]
-    stringData=imgencode.tostring()
-    cam_q.put(stringData,block=True)
+    camera_port=-1
+
+    ramp_frames=100
+
+    camera=cv2.VideoCapture(camera_port) #this makes a web cam object
+    while True:
+        print("Snapping a photo!")
+        retval, im = camera.read()
+        imgencode=cv2.imencode('.jpg',im)[1]
+        stringData=imgencode.tostring()
+        cam_q.put(stringData,block=True)
+        sleep(0.25)
 
 
 if __name__ == '__main__':
