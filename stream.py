@@ -17,13 +17,6 @@ cam_q = Queue(maxsize=5)
 def index():
     return render_template('index.html')
 
-# def gen():
-#     i=1
-#     while i<10:
-#         yield (b'--frame\r\n'
-#             b'Content-Type: text/plain\r\n\r\n'+str(i)+b'\r\n')
-#         i+=1
-
 def get_frame():
     i=1
     while True:
@@ -32,7 +25,7 @@ def get_frame():
         yield (b'--frame\r\n'
             b'Content-Type: text/plain\r\n\r\n'+stringData+b'\r\n')
         i+=1
-        # sleep(0.1)
+        sleep(0.1)
 
 @app.route('/calc')
 def calc():
@@ -54,7 +47,7 @@ def image_thread():
             cam_q.put(stringData,block=True)
         except Exception as e:
             print("Exception taking photo: %s" % str(e) )
-            sleep(0.5)
+            # sleep(0.5)
 
 
 if __name__ == '__main__':
