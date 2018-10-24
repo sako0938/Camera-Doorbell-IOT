@@ -5,8 +5,13 @@ import sys
 import numpy
 from time import sleep
 
+import threading
+
+
 
 app = Flask(__name__)
+
+cam_q = Queue(maxsize=5)
 
 @app.route('/')
 def index():
@@ -30,13 +35,11 @@ def get_frame():
     
     i=1
     while True:
-        retval, im = camera.read()
-        imgencode=cv2.imencode('.jpg',im)[1]
-        stringData=imgencode.tostring()
+        stringData = cam_q.get()
         yield (b'--frame\r\n'
             b'Content-Type: text/plain\r\n\r\n'+stringData+b'\r\n')
         i+=1
-        sleep(0.5)
+        sleep(0.25)
 
     del(camera)
 
@@ -45,5 +48,16 @@ def calc():
      return Response(get_frame(),mimetype='multipart/x-mixed-replace; boundary=frame')
 
 
+def image_thread():
+    retval, im = camera.read()
+    imgencode=cv2.imencode('.jpg',im)[1]
+    stringData=imgencode.tostring()
+    cam_q.put(stringData,block=True)
+
+
 if __name__ == '__main__':
+    job_thread = threading.Thread(target=image_thread)
+    job_thread.start()
+
+    sleep(1)
     app.run(host='0.0.0.0', port=80, debug=True, threaded=True)
