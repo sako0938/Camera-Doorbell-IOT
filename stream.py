@@ -6,8 +6,7 @@ import numpy
 from time import sleep
 
 import threading
-import queue
-
+from queue import Queue
 
 
 app = Flask(__name__)
