@@ -20,12 +20,11 @@ def index():
 def get_frame():
     i=1
     while True:
-        stringData = cam_q.get(block=True)
+        stringData = cam_q.get()
         print("size of queue: %d" % cam_q.qsize() )
         yield (b'--frame\r\n'
             b'Content-Type: text/plain\r\n\r\n'+stringData+b'\r\n')
         i+=1
-        sleep(0.1)
         
 
 @app.route('/calc')
@@ -46,7 +45,7 @@ def image_thread():
             imgencode=cv2.imencode('.jpg',im)[1]
             stringData=imgencode.tostring()
             cam_q.put(stringData,block=True)
-            
+            sleep(0.1)
         except Exception as e:
             print("Exception taking photo: %s" % str(e) )
             # sleep(0.5)
