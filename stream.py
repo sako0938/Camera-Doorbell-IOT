@@ -32,7 +32,7 @@ def get_frame():
         yield (b'--frame\r\n'
             b'Content-Type: text/plain\r\n\r\n'+stringData+b'\r\n')
         i+=1
-        sleep(0.25)
+        # sleep(0.1)
 
 @app.route('/calc')
 def calc():
@@ -52,7 +52,6 @@ def image_thread():
             imgencode=cv2.imencode('.jpg',im)[1]
             stringData=imgencode.tostring()
             cam_q.put(stringData,block=True)
-            sleep(0.25)
         except Exception as e:
             print("Exception taking photo: %s" % str(e) )
             sleep(0.5)
