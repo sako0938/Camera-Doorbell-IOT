@@ -20,7 +20,7 @@ def gen():
 
 def get_frame():
 
-    camera_port=0
+    camera_port=-1
 
     ramp_frames=100
 
@@ -44,4 +44,4 @@ def calc():
 
 
 if __name__ == '__main__':
-    app.run(host='localhost', debug=True, threaded=True)
+    app.run(host='0.0.0.0', port=80, debug=True, threaded=True)
